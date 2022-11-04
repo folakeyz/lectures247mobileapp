@@ -43,7 +43,7 @@ const DetailScreen = ({ navigation, route }) => {
       >
         <Image
           source={{
-            uri: `${BASE_URL}/uploads/${selectedCourse.thumbnail}`,
+            uri: `https://portal.lectures247.com/uploads/${selectedCourse.thumbnail}`,
           }}
           resizeMode="cover"
           style={{

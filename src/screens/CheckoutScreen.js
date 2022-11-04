@@ -22,6 +22,8 @@ const CheckoutScreen = (props) => {
   const { cartItems } = cart;
   const order = useSelector((state) => state.order);
   const { success } = order;
+  const profile = useSelector((state) => state.profile);
+  const { user } = profile;
   const dispatch = useDispatch();
   const total = cartItems
     .reduce((acc, item) => acc + 1 * item.price, 0)
@@ -43,9 +45,9 @@ const CheckoutScreen = (props) => {
     >
       <View>
         <Paystack
-          paystackKey="pk_test_52291906109e178d68d922424d0c2cba35d36501"
+          paystackKey="pk_live_3d2185eab34ee382b9fbe95ca80a556a43d78140"
           amount={total}
-          billingEmail="paystackwebview@something.com"
+          billingEmail={user.email}
           activityIndicatorColor="green"
           onCancel={(e) => {
             // handle response here

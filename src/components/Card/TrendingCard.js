@@ -69,7 +69,7 @@ const TrendingCard = ({ containerstyle, trendingitem, onPress }) => {
       {/* BGImage */}
       <Image
         source={{
-          uri: `${BASE_URL}/uploads/${trendingitem.thumbnail}`,
+          uri: `https://portal.lectures247.com/uploads/${trendingitem.thumbnail}`,
         }}
         resizeMode="cover"
         style={{

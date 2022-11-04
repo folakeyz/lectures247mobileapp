@@ -17,10 +17,7 @@ export const addToCart = (id) => async (dispatch, getState) => {
     },
   };
 
-  const { data } = await axios.get(
-    `${BASE_URL}/api/v1/students/videos/${id}`,
-    config
-  );
+  const { data } = await axios.get(`${BASE_URL}/api/v1/videos/${id}`, config);
 
   dispatch({
     type: CART_ADD_ITEM,

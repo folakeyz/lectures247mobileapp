@@ -1,20 +1,26 @@
 import React, { useState } from "react";
 import {
-  StyleSheet,
   Text,
   View,
-  Image,
+  ImageBackground,
   TextInput,
   TouchableOpacity,
-  Alert,
   ActivityIndicator,
-  CheckBox,
-  Modal,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
+  Alert,
+  StatusBar,
+  Modal,
+  CheckBox,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import * as Animatable from "react-native-animatable";
 import { useSelector, useDispatch } from "react-redux";
 import Terms from "../../components/Terms";
 import { userRegister } from "../../redux/actions/registerActions";
+import { AntDesign } from "@expo/vector-icons";
+import styles from "../Styling";
 
 const PasswordScreen = (props) => {
   const dispatch = useDispatch();
@@ -57,220 +63,149 @@ const PasswordScreen = (props) => {
     }
   };
   if (success) {
-    props.navigation.navigate("Verification");
+    props.navigation.navigate("Home");
   }
   return (
-    // <ScrollView>
-    <View style={styles.container}>
-      <View style={styles.imgWrapper}>
-        <Image
-          source={require("../../../assets/logo.png")}
-          style={styles.homeImg}
-        ></Image>
-      </View>
-      {error && <Text style={styles.error}>{error}</Text>}
-      {loading ? (
-        <ActivityIndicator size="large" color="#0075FF" />
-      ) : (
-        <>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Enter Password"
-              onChangeText={(text) => setPassword(text)}
-              value={password}
-              style={styles.input}
-              secureTextEntry={true}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Confirm Password"
-              onChangeText={(text) => setConfirmPassword(text)}
-              value={confirmPassword}
-              style={styles.input}
-              secureTextEntry={true}
-            />
-          </View>
-
-          {/* Terms & Conditions */}
-
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(!modalVisible);
-            }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <StatusBar backgroundColor="#0075FF" barStyle="light-content" />
+      <View style={styles.container}>
+        <ImageBackground
+          source={{
+            uri: "https://lectures247.com/static/media/2.10c049b3.jpg",
+          }}
+          style={styles.imgBackground}
+        >
+          <LinearGradient
+            colors={["#0075FF", "#0C67CF"]}
+            start={[0.9, 0.2]}
+            style={styles.linearGradient}
           >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>Terms & Conditions</Text>
-
-                <Terms />
-                <TouchableOpacity
-                  style={[styles.button]}
-                  onPress={() => setModalVisible(!modalVisible)}
-                >
-                  <Text>Close</Text>
-                </TouchableOpacity>
-              </View>
+            <View style={styles.headerSm}>
+              <Animatable.Image
+                source={require("../../../assets/logo.png")}
+                animation="bounceIn"
+                duraton="1500"
+                style={styles.logo}
+              ></Animatable.Image>
             </View>
-          </Modal>
+            {loading ? (
+              <ActivityIndicator size="large" color="#0075FF" />
+            ) : (
+              <>
+                <Animatable.View
+                  animation="fadeInUpBig"
+                  style={styles.footerBg}
+                >
+                  <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={styles.inputContainer}>
+                      <Text style={styles.title}>Create Account</Text>
+                    </View>
+                    <View style={styles.inputContainer}>
+                      <TextInput
+                        placeholder="Enter Password"
+                        onChangeText={(text) => setPassword(text)}
+                        value={password}
+                        style={styles.input}
+                        secureTextEntry={true}
+                      />
+                    </View>
+                    <View style={styles.inputContainer}>
+                      <TextInput
+                        placeholder="Confirm Password"
+                        onChangeText={(text) => setConfirmPassword(text)}
+                        value={confirmPassword}
+                        style={styles.input}
+                        secureTextEntry={true}
+                      />
+                    </View>
 
-          <View style={styles.checkboxContainer}>
-            <CheckBox
-              value={isSelected}
-              onValueChange={setSelection}
-              style={styles.checkbox}
-            />
+                    {/* Terms & Conditions */}
 
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <Text>I have read and agree with the Terms and Conditions</Text>
-            </TouchableOpacity>
-          </View>
+                    <Modal
+                      animationType="slide"
+                      transparent={true}
+                      visible={modalVisible}
+                      onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                      }}
+                    >
+                      <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                          <Text style={styles.modalText}>
+                            Terms & Conditions
+                          </Text>
 
-          <View style={styles.inputContainer}>
-            <TouchableOpacity
-              style={[styles.button, styles.green]}
-              onPress={submit}
-            >
-              <Text style={styles.text}>Create Account</Text>
-            </TouchableOpacity>
-          </View>
+                          <Terms />
+                          <TouchableOpacity
+                            style={[styles.button]}
+                            onPress={() => setModalVisible(!modalVisible)}
+                          >
+                            <Text>Close</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    </Modal>
 
-          <View style={[styles.inputContainer, styles.captionBox]}>
-            <TouchableOpacity
-              onPress={() => props.navigation.navigate("Login")}
-            >
-              <Text style={styles.caption}>
-                Already Have an account? <Text style={styles.link}>Login</Text>
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      )}
-    </View>
-    // </ScrollView>
+                    <View style={styles.checkboxContainer}>
+                      <CheckBox
+                        value={isSelected}
+                        onValueChange={setSelection}
+                        style={styles.checkbox}
+                      />
+
+                      <TouchableOpacity onPress={() => setModalVisible(true)}>
+                        <Text>
+                          I have read and agree with the Terms and Conditions
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.inputContainer}>
+                      <TouchableOpacity
+                        style={[styles.button, styles.green]}
+                        onPress={submit}
+                      >
+                        <View style={styles.btnFlex}>
+                          <Text
+                            style={{
+                              color: "white",
+                              flex: 2.7,
+                              textAlign: "center",
+                            }}
+                          >
+                            Create Account
+                          </Text>
+                          <AntDesign
+                            name="user"
+                            size={18}
+                            color="white"
+                            style={{ flex: 0.3, textAlign: "center" }}
+                          />
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={[styles.inputContainer, styles.captionBox]}>
+                      <TouchableOpacity
+                        onPress={() => props.navigation.navigate("Login")}
+                      >
+                        <Text style={[styles.caption, { textAlign: "center" }]}>
+                          Already Have an account?{" "}
+                          <Text style={styles.link}>Login</Text>
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </ScrollView>
+                </Animatable.View>
+              </>
+            )}
+          </LinearGradient>
+        </ImageBackground>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: "center",
-  },
-  imgWrapper: {
-    width: "100%",
-    height: 100,
-    paddingHorizontal: 2,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 10,
-  },
-  homeImg: {
-    width: 100,
-    height: 100,
-  },
-  inputContainer: {
-    padding: 10,
-  },
-  input: {
-    borderColor: "#0075FF",
-    borderWidth: 0,
-    borderBottomColor: "#0075FF",
-    borderBottomWidth: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 5,
-    borderRadius: 10,
-  },
-
-  button: {
-    width: "100%",
-    height: 50,
-    borderRadius: 20,
-    backgroundColor: "white",
-    color: "black",
-    padding: 3,
-    paddingTop: 15,
-    margin: 5,
-    textAlign: "center",
-  },
-  green: {
-    backgroundColor: "#0075FF",
-    color: "white",
-  },
-  text: {
-    color: "white",
-    textAlign: "center",
-  },
-  captionBox: {
-    alignItems: "flex-end",
-    justifyContent: "center",
-    flexDirection: "row",
-    paddingVertical: 10,
-  },
-  caption: {
-    textAlign: "center",
-  },
-  link: {
-    color: "#0075FF",
-  },
-  error: {
-    // color: "#6EBA4F",
-    color: "#0075FF",
-    backgroundColor: "#fff",
-    padding: 10,
-    borderRadius: 5,
-  },
-  checkboxContainer: {
-    flexDirection: "row",
-    marginBottom: 20,
-  },
-  checkbox: {
-    alignSelf: "center",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  // button: {
-  //   borderRadius: 20,
-  //   padding: 10,
-  //   elevation: 2
-  // },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-  },
-});
 
 export default PasswordScreen;

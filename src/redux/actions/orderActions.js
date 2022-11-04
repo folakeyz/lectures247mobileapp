@@ -30,7 +30,7 @@ export const payOrder =
       };
 
       const { data } = await axios.post(
-        `${BASE_URL}/api/v1/students/order`,
+        `${BASE_URL}/api/v1/order`,
         { orderItems, totalPrice, paymentResult },
         config
       );
@@ -75,10 +75,7 @@ export const getMyCourses = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(
-      `${BASE_URL}/api/v1/students/order`,
-      config
-    );
+    const { data } = await axios.get(`${BASE_URL}/api/v1/order`, config);
 
     dispatch({
       type: LIST_MYCOURSES_SUCCESS,

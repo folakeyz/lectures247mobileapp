@@ -19,7 +19,7 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress }) => {
       {/* Image */}
       <Image
         source={{
-          uri: `${BASE_URL}/uploads/${categoryItem.thumbnail}`,
+          uri: `https://portal.lectures247.com/uploads/${categoryItem.thumbnail}`,
         }}
         resizeMode="cover"
         style={{

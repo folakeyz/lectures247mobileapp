@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from "react";
 import {
-  StyleSheet,
   Text,
   View,
-  Image,
+  ImageBackground,
   TextInput,
-  ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Alert,
+  StatusBar,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import * as Animatable from "react-native-animatable";
 import RNPickerSelect from "react-native-picker-select";
 import { useSelector, useDispatch } from "react-redux";
 import { listlocations } from "../../redux/actions/locationAction";
 import { saveEducationInfo } from "../../redux/actions/registerActions";
+import { AntDesign } from "@expo/vector-icons";
+import styles from "../Styling";
 
 const EducationInfoScreen = (props) => {
   const dispatch = useDispatch();
@@ -22,7 +29,6 @@ const EducationInfoScreen = (props) => {
   const [location, setLocation] = useState("");
   const [level, setLevel] = useState("");
   const [course, setCourse] = useState("");
-  const [msg, setMsg] = useState(false);
 
   const register = useSelector((state) => state.register);
   const { basicInfo } = register;
@@ -36,7 +42,7 @@ const EducationInfoScreen = (props) => {
 
   const save = () => {
     if (!gender || !location || !level || !course) {
-      setMsg(true);
+      Alert.alert("Error", "All Fields are Compulsory", [{ text: "Ok" }]);
     } else {
       dispatch(saveEducationInfo({ gender, location, level, course }));
       props.navigation.navigate("Password");
@@ -44,174 +50,155 @@ const EducationInfoScreen = (props) => {
   };
 
   return (
-    // <ScrollView>
-    <View style={styles.container}>
-      <View style={styles.imgWrapper}>
-        <Image
-          source={require("../../../assets/logo.png")}
-          style={styles.homeImg}
-        ></Image>
-      </View>
-      {msg && <Text style={styles.error}>All Fields are Compulsory</Text>}
-      {loading ? (
-        <ActivityIndicator size="large" color="#0075FF" />
-      ) : (
-        <>
-          <View style={styles.inputContainer}>
-            <RNPickerSelect
-              onValueChange={(text) => setGender(text)}
-              useNativeAndroidPickerStyle={false}
-              style={{
-                inputAndroid: {
-                  color: "black",
-                  borderColor: "#95B89C",
-                  borderWidth: 1,
-                  padding: 10,
-                  borderRadius: 10,
-                  paddingHorizontal: 30,
-                },
-              }}
-              placeholder={{
-                label: "Select a Gender...",
-                value: null,
-              }}
-              items={[
-                { label: "Male", value: "Male" },
-                { label: "Female", value: "Female" },
-              ]}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <RNPickerSelect
-              onValueChange={(text) => setLocation(text)}
-              useNativeAndroidPickerStyle={false}
-              style={{
-                inputAndroid: {
-                  color: "black",
-                  borderColor: "#95B89C",
-                  borderWidth: 1,
-                  padding: 10,
-                  borderRadius: 10,
-                  paddingHorizontal: 30,
-                },
-              }}
-              items={locations.map((item) => ({
-                label: item.location,
-                value: item._id,
-              }))}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Level"
-              onChangeText={(text) => setLevel(text)}
-              value={level}
-              style={styles.input}
-              keyboardType="numeric"
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Enter Course of Study"
-              onChangeText={(text) => setCourse(text)}
-              value={course}
-              style={styles.input}
-            />
-          </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <StatusBar backgroundColor="#0075FF" barStyle="light-content" />
+      <View style={styles.container}>
+        <ImageBackground
+          source={{
+            uri: "https://lectures247.com/static/media/2.10c049b3.jpg",
+          }}
+          style={styles.imgBackground}
+        >
+          <LinearGradient
+            colors={["#0075FF", "#0C67CF"]}
+            start={[0.9, 0.2]}
+            style={styles.linearGradient}
+          >
+            <View style={styles.headerSm}>
+              <Animatable.Image
+                source={require("../../../assets/logo.png")}
+                animation="bounceIn"
+                duraton="1500"
+                style={styles.logo}
+              ></Animatable.Image>
+            </View>
+            {loading ? (
+              <ActivityIndicator size="large" color="#0075FF" />
+            ) : (
+              <>
+                <Animatable.View
+                  animation="fadeInUpBig"
+                  style={styles.footerBg}
+                >
+                  <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={styles.inputContainer}>
+                      <Text style={styles.title}>Create Account</Text>
+                      <Text style={styles.caption}>Education Information</Text>
+                    </View>
+                    <View style={styles.inputContainer}>
+                      <RNPickerSelect
+                        onValueChange={(text) => setGender(text)}
+                        useNativeAndroidPickerStyle={false}
+                        style={{
+                          inputAndroid: {
+                            borderColor: "#CECFD1",
+                            borderWidth: 1,
+                            paddingVertical: 10,
+                            paddingHorizontal: 20,
+                            borderRadius: 30,
+                            backgroundColor: "white",
+                            color: "black",
+                          },
+                        }}
+                        placeholder={{
+                          label: "Select a Gender...",
+                          value: null,
+                        }}
+                        items={[
+                          { label: "Male", value: "Male" },
+                          { label: "Female", value: "Female" },
+                        ]}
+                      />
+                    </View>
+                    <View style={styles.inputContainer}>
+                      <RNPickerSelect
+                        onValueChange={(text) => setLocation(text)}
+                        useNativeAndroidPickerStyle={false}
+                        style={{
+                          inputAndroid: {
+                            borderColor: "#CECFD1",
+                            borderWidth: 1,
+                            paddingVertical: 10,
+                            paddingHorizontal: 20,
+                            borderRadius: 30,
+                            backgroundColor: "white",
+                            color: "black",
+                          },
+                        }}
+                        placeholder={{
+                          label: "Select University",
+                          value: null,
+                        }}
+                        items={locations.map((item) => ({
+                          label: item.location,
+                          value: item._id,
+                        }))}
+                      />
+                    </View>
+                    <View style={styles.inputContainer}>
+                      <TextInput
+                        placeholder="Level"
+                        onChangeText={(text) => setLevel(text)}
+                        value={level}
+                        style={styles.input}
+                        keyboardType="numeric"
+                      />
+                    </View>
+                    <View style={styles.inputContainer}>
+                      <TextInput
+                        placeholder="Enter Course of Study"
+                        onChangeText={(text) => setCourse(text)}
+                        value={course}
+                        style={styles.input}
+                      />
+                    </View>
 
-          <View style={styles.inputContainer}>
-            <TouchableOpacity
-              style={[styles.button, styles.green]}
-              onPress={save}
-            >
-              <Text style={styles.text}>Next</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={[styles.inputContainer, styles.captionBox]}>
-            <TouchableOpacity
-              onPress={() => props.navigation.navigate("Education")}
-            >
-              <Text style={styles.caption}>
-                Already Have an account? <Text style={styles.link}>Login</Text>
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      )}
-    </View>
-    // </ScrollView>
+                    <View style={styles.inputContainer}>
+                      <TouchableOpacity
+                        style={[styles.button, styles.green]}
+                        onPress={save}
+                      >
+                        <View style={styles.btnFlex}>
+                          <Text
+                            style={{
+                              color: "white",
+                              flex: 2.7,
+                              textAlign: "center",
+                            }}
+                          >
+                            Next
+                          </Text>
+                          <AntDesign
+                            name="rightcircle"
+                            size={18}
+                            color="white"
+                            style={{ flex: 0.3, textAlign: "center" }}
+                          />
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={[styles.inputContainer, styles.captionBox]}>
+                      <TouchableOpacity
+                        onPress={() => props.navigation.navigate("Login")}
+                      >
+                        <Text style={[styles.caption, { textAlign: "center" }]}>
+                          Already Have an account?{" "}
+                          <Text style={styles.link}>Login</Text>
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </ScrollView>
+                </Animatable.View>
+              </>
+            )}
+          </LinearGradient>
+        </ImageBackground>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: "center",
-  },
-  imgWrapper: {
-    width: "100%",
-    height: 100,
-    paddingHorizontal: 2,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 10,
-  },
-  homeImg: {
-    width: 100,
-    height: 100,
-  },
-  inputContainer: {
-    padding: 10,
-  },
-  input: {
-    borderColor: "#0075FF",
-    borderWidth: 0,
-    borderBottomColor: "#0075FF",
-    borderBottomWidth: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 5,
-    borderRadius: 10,
-  },
-
-  button: {
-    width: "100%",
-    height: 50,
-    borderRadius: 20,
-    backgroundColor: "white",
-    color: "black",
-    padding: 3,
-    paddingTop: 15,
-    margin: 5,
-    textAlign: "center",
-  },
-  green: {
-    backgroundColor: "#0075FF",
-    color: "white",
-  },
-  text: {
-    color: "white",
-    textAlign: "center",
-  },
-  captionBox: {
-    alignItems: "flex-end",
-    justifyContent: "center",
-    flexDirection: "row",
-    paddingVertical: 10,
-  },
-  caption: {
-    textAlign: "center",
-  },
-  link: {
-    color: "#0075FF",
-  },
-  error: {
-    // color: "#6EBA4F",
-    color: "#0075FF",
-    backgroundColor: "#fff",
-    padding: 10,
-    borderRadius: 5,
-  },
-});
 
 export default EducationInfoScreen;

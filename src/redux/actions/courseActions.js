@@ -25,10 +25,7 @@ export const getCourseDetails = () => async (dispatch, getState) => {
         Authorization: `Bearer ${token.token}`,
       },
     };
-    const { data } = await axios.get(
-      `${BASE_URL}/api/v1/students/videos/`,
-      config
-    );
+    const { data } = await axios.get(`${BASE_URL}/api/v1/videos/`, config);
 
     dispatch({
       type: COURSE_LIST_SUCCESS,
@@ -60,10 +57,7 @@ export const getSingleCourse = (id) => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
-    const { data } = await axios.get(
-      `${BASE_URL}/api/v1/students/videos/${id}`,
-      config
-    );
+    const { data } = await axios.get(`${BASE_URL}/api/v1/videos/${id}`, config);
 
     dispatch({
       type: SINGLE_COURSE_SUCCESS,

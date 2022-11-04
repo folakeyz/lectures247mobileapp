@@ -25,7 +25,8 @@
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.icodes.com"
+      "package": "com.icodes.com",
+      "versionCode": 3
     },
     "web": {
       "favicon": "./assets/favicon.png"

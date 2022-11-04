@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 const Stack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
 
+import WelcomeScreen from "../../screens/WelcomeScreen";
 import LoginScreen from "../../screens/LoginScreen";
 import HomeScreen from "../../screens/HomeScreen";
 import BasicInfoScreen from "../../screens/Register/BasicInfoScreen";
@@ -84,6 +85,11 @@ function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+      <Stack.Screen
+          name="Welcome"
+          component={WelcomeScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Login"
           component={LoginScreen}

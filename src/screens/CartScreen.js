@@ -68,7 +68,7 @@ const CartScreen = (props) => {
                   {/* Image */}
                   <Image
                     source={{
-                      uri: `${BASE_URL}/uploads/${item.image}`,
+                      uri: `https://portal.lectures247.com/uploads/${item.image}`,
                     }}
                     resizeMode="cover"
                     style={{

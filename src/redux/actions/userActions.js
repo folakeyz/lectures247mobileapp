@@ -24,7 +24,7 @@ export const login = (email, password) => async (dispatch) => {
       },
     };
     const { data } = await axios.post(
-      `${BASE_URL}/api/v1/auth/students/login`,
+      `${BASE_URL}/api/v1/auth/login`,
       { email, password },
       config
     );
@@ -43,6 +43,8 @@ export const login = (email, password) => async (dispatch) => {
           ? error.response.data.error
           : error.message,
     });
+    AsyncStorage.removeItem("userInfo");
+  dispatch({ type: USER_LOGOUT });
   }
 };
 
@@ -68,7 +70,7 @@ export const verify = (code) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      `${BASE_URL}/api/v1/auth/students/verify`,
+      `${BASE_URL}/api/v1/auth/verify`,
       { code },
       config
     );
@@ -104,10 +106,7 @@ export const getUserDetails = () => async (dispatch, getState) => {
         Authorization: `Bearer ${token.token}`,
       },
     };
-    const { data } = await axios.get(
-      `${BASE_URL}/api/v1/auth/students/me/`,
-      config
-    );
+    const { data } = await axios.get(`${BASE_URL}/api/v1/auth/me/`, config);
 
     dispatch({
       type: USER_DETAILS_SUCCESS,
@@ -121,5 +120,7 @@ export const getUserDetails = () => async (dispatch, getState) => {
           ? error.response.data.error
           : error.message,
     });
+    AsyncStorage.removeItem("userInfo");
+    dispatch({ type: USER_LOGOUT });
   }
 };

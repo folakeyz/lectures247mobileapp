@@ -4,22 +4,38 @@ import {
   Text,
   View,
   Image,
-  TextInput,
+  ImageBackground,
   TouchableOpacity,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Alert,
+  StatusBar,
 } from "react-native";
+import { TextInput } from "react-native-paper";
+import { LinearGradient } from "expo-linear-gradient";
+import * as Animatable from "react-native-animatable";
+import styles from "./Styling";
 import { useSelector, useDispatch } from "react-redux";
 import { login } from "../redux/actions/userActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { USER_LOGIN_RESET } from "../redux/constants/userConstants";
+
 const LoginScreen = (props) => {
   const dispatch = useDispatch();
   const userLogin = useSelector((state) => state.userLogin);
   const { loading, error, userInfo } = userLogin;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(true);
 
   const loginhandler = () => {
-    dispatch(login(email, password));
+    if (!email || !password) {
+      Alert.alert("Error", "Enter Email and Password", [{ text: "Ok" }]);
+    } else {
+      dispatch(login(email, password));
+    }
   };
 
   useEffect(() => {
@@ -32,129 +48,108 @@ const LoginScreen = (props) => {
     };
     login();
   }, [userInfo, props]);
+
+  if (error) {
+    Alert.alert("Error", error, [{ text: "Ok" }]);
+    dispatch({ type: USER_LOGIN_RESET });
+  }
   return (
-    <View style={styles.container}>
-      <View style={styles.imgWrapper}>
-        <Image
-          source={require("../../assets/logo.png")}
-          style={styles.homeImg}
-        ></Image>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <StatusBar backgroundColor="#0075FF" barStyle="light-content" />
+      <View style={styles.container}>
+        <ImageBackground
+          source={{
+            uri: "https://lectures247.com/static/media/2.10c049b3.jpg",
+          }}
+          style={styles.imgBackground}
+        >
+          <LinearGradient
+            colors={["#0075FF", "#0C67CF"]}
+            start={[0.9, 0.2]}
+            style={styles.linearGradient}
+          >
+            <View style={styles.headerMd}>
+              <Animatable.Image
+                source={require("../../assets/logo.png")}
+                animation="bounceIn"
+                duraton="1500"
+                style={styles.logo}
+              ></Animatable.Image>
+            </View>
+            {loading ? (
+              <ActivityIndicator size="large" color="#fff" />
+            ) : (
+              <>
+                <Animatable.View
+                  animation="fadeInUpBig"
+                  style={styles.footerMd}
+                >
+                  <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={styles.inputContainer}>
+                      <Text style={styles.title}>Login </Text>
+                    </View>
+
+                    <View style={styles.inputContainer}>
+                      <TextInput
+                        placeholder="Email Address"
+                        onChangeText={(text) => setEmail(text)}
+                        value={email}
+                        // style={styles.input}
+                        autoCapitalize="none"
+                      />
+                    </View>
+                    <View style={styles.inputContainer}>
+                      <TextInput
+                        placeholder="Password"
+                        onChangeText={(text) => setPassword(text)}
+                        value={password}
+                        // style={styles.input}
+                        secureTextEntry={passwordVisible}
+                        right={
+                          <TextInput.Icon
+                            name={passwordVisible ? "eye" : "eye-off"}
+                            onPress={() => setPasswordVisible(!passwordVisible)}
+                          />
+                        }
+                      />
+                    </View>
+                    <View style={styles.inputContainer}>
+                      <TouchableOpacity
+                        style={[styles.button, styles.green]}
+                        onPress={loginhandler}
+                      >
+                        <Text
+                          style={[
+                            styles.text,
+                            { textAlign: "center", color: "white" },
+                          ]}
+                        >
+                          Login
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={[styles.inputContainer, styles.captionBox]}>
+                      <TouchableOpacity
+                        onPress={() => props.navigation.navigate("Register")}
+                      >
+                        <Text style={[styles.caption, { textAlign: "center" }]}>
+                          Don't Have an account?{" "}
+                          <Text style={styles.link}>Register</Text>
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </ScrollView>
+                </Animatable.View>
+              </>
+            )}
+          </LinearGradient>
+        </ImageBackground>
       </View>
-      {error && <Text style={styles.error}>{error}</Text>}
-      {loading ? (
-        <ActivityIndicator size="large" color="#0075FF" />
-      ) : (
-        <>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Email Address"
-              onChangeText={(text) => setEmail(text)}
-              value={email}
-              style={styles.input}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Password"
-              onChangeText={(text) => setPassword(text)}
-              value={password}
-              style={styles.input}
-              secureTextEntry={true}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TouchableOpacity
-              style={[styles.button, styles.green]}
-              onPress={loginhandler}
-            >
-              <Text style={styles.text}>Login</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={[styles.inputContainer, styles.captionBox]}>
-            <TouchableOpacity
-              onPress={() => props.navigation.navigate("Register")}
-            >
-              <Text style={styles.caption}>
-                Don't Have an account? <Text style={styles.link}>Register</Text>
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      )}
-    </View>
+    </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: "center",
-  },
-  imgWrapper: {
-    width: "100%",
-    height: 100,
-    paddingHorizontal: 2,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 10,
-  },
-  homeImg: {
-    width: 100,
-    height: 100,
-  },
-  inputContainer: {
-    padding: 10,
-  },
-  input: {
-    borderColor: "#0075FF",
-    borderWidth: 0,
-    borderBottomColor: "#0075FF",
-    borderBottomWidth: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 5,
-    borderRadius: 10,
-  },
-
-  button: {
-    width: "100%",
-    height: 50,
-    borderRadius: 10,
-    backgroundColor: "white",
-    color: "black",
-    padding: 3,
-    paddingTop: 15,
-    margin: 5,
-    textAlign: "center",
-  },
-  green: {
-    // backgroundColor: "#0075FF",
-    backgroundColor: "#0075FF",
-    color: "white",
-  },
-  text: {
-    color: "white",
-    textAlign: "center",
-  },
-  captionBox: {
-    alignItems: "flex-end",
-    justifyContent: "center",
-    flexDirection: "row",
-    paddingVertical: 10,
-  },
-  caption: {
-    textAlign: "center",
-  },
-  link: {
-    color: "#0075FF",
-  },
-  error: {
-    // color: "#6EBA4F",
-    color: "#0075FF",
-    backgroundColor: "#D4BAF3",
-    padding: 10,
-    borderRadius: 5,
-  },
-});
 
 export default LoginScreen;

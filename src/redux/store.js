@@ -15,6 +15,7 @@ import {
 } from "./reducers/courseReducers";
 import {
   registerReducer,
+  userCheckReducer,
   userRegisterReducer,
 } from "./reducers/registerReducers";
 import { cartReducer } from "./reducers/cartReducers";
@@ -30,6 +31,7 @@ const reducer = combineReducers({
   register: persistReducer(persistConfig, registerReducer),
   userRegistration: persistReducer(persistConfig, userRegisterReducer),
   userLogin: persistReducer(persistConfig, userLoginReducer),
+  userCheck: persistReducer(persistConfig, userCheckReducer),
   userVerification: persistReducer(persistConfig, userVerificationReducer),
   profile: persistReducer(persistConfig, userDetailsReducer),
   courseList: persistReducer(persistConfig, getCoursesReducer),

@@ -1,16 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  StyleSheet,
   Text,
   View,
-  Image,
-  TextInput,
-  ScrollView,
+  ImageBackground,
   TouchableOpacity,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Alert,
+  StatusBar,
 } from "react-native";
-import { useDispatch } from "react-redux";
-import { saveBasicInfo } from "../../redux/actions/registerActions";
+import { TextInput } from "react-native-paper";
+import { LinearGradient } from "expo-linear-gradient";
+import * as Animatable from "react-native-animatable";
+import { useDispatch, useSelector } from "react-redux";
+import { checkUser, saveBasicInfo } from "../../redux/actions/registerActions";
+import { AntDesign } from "@expo/vector-icons";
+import styles from "../Styling";
+import { USER_CHECK_RESET } from "../../redux/constants/registerConstants";
 
 const BasicInfoScreen = (props) => {
   const dispatch = useDispatch();
@@ -19,170 +27,170 @@ const BasicInfoScreen = (props) => {
   const [username, setUsername] = useState("");
   const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
-  const [msg, setMsg] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [appError, setAppError] = useState(false);
+
+  const userCheck = useSelector((state) => state.userCheck);
+  const { error, success } = userCheck;
 
   const save = () => {
     setLoading(true);
     if (!firstname || !lastname || !username || !mobile || !email) {
+      Alert.alert("Error", "All Fields are Compulsory", [{ text: "Ok" }]);
       setLoading(false);
-      setMsg(true);
     } else {
-      dispatch(saveBasicInfo({ firstname, lastname, username, mobile, email }));
-      setLoading(false);
-      props.navigation.navigate("Education");
+      if (success) {
+        setLoading(false);
+        dispatch(
+          saveBasicInfo({ firstname, lastname, username, mobile, email })
+        );
+        dispatch({ type: USER_CHECK_RESET });
+        props.navigation.navigate("Education");
+      } else {
+        setLoading(false);
+        Alert.alert("Error", error, [{ text: "Ok" }]);
+        setAppError(true);
+      }
     }
   };
-  return (
-    // <ScrollView>
-    <View style={styles.container}>
-      <View style={styles.imgWrapper}>
-        <Image
-          source={require("../../../assets/logo.png")}
-          style={styles.homeImg}
-        ></Image>
-      </View>
-      {msg && <Text style={styles.error}>All Fields are Compulsory</Text>}
-      {loading ? (
-        <ActivityIndicator size="large" color="#0075FF" />
-      ) : (
-        <>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="First Name"
-              onChangeText={(text) => setFirstName(text)}
-              value={firstname}
-              style={styles.input}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Last Name"
-              onChangeText={(text) => setLastName(text)}
-              value={lastname}
-              style={styles.input}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Username"
-              onChangeText={(text) => setUsername(text)}
-              value={username}
-              style={styles.input}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Enter Email Address"
-              onChangeText={(text) => setEmail(text)}
-              value={email}
-              style={styles.input}
-              keyboardType="email-address"
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Enter Mobile"
-              onChangeText={(text) => setMobile(text)}
-              value={mobile}
-              style={styles.input}
-              keyboardType="numeric"
-            />
-          </View>
+  const verify = () => {
+    dispatch({ type: USER_CHECK_RESET });
+    dispatch(checkUser(email, mobile, username));
+  };
 
-          <View style={styles.inputContainer}>
-            <TouchableOpacity
-              style={[styles.button, styles.green]}
-              onPress={save}
-            >
-              <Text style={styles.text}>Next</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={[styles.inputContainer, styles.captionBox]}>
-            <TouchableOpacity
-              onPress={() => props.navigation.navigate("Login")}
-            >
-              <Text style={styles.caption}>
-                Already Have an account? <Text style={styles.link}>Login</Text>
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      )}
-    </View>
-    // </ScrollView>
+  useEffect(() => {
+    dispatch({ type: USER_CHECK_RESET });
+  }, [dispatch]);
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <StatusBar backgroundColor="#0075FF" barStyle="light-content" />
+      <View style={styles.container}>
+        <ImageBackground
+          source={{
+            uri: "https://lectures247.com/static/media/2.10c049b3.jpg",
+          }}
+          style={styles.imgBackground}
+        >
+          <LinearGradient
+            colors={["#0075FF", "#0C67CF"]}
+            start={[0.9, 0.2]}
+            style={styles.linearGradient}
+          >
+            <View style={styles.headerSm}>
+              <Animatable.Image
+                source={require("../../../assets/logo.png")}
+                animation="bounceIn"
+                duraton="1500"
+                style={styles.logo}
+              ></Animatable.Image>
+            </View>
+            {loading ? (
+              <ActivityIndicator size="large" color="#fff" />
+            ) : (
+              <>
+                <Animatable.View
+                  animation="fadeInUpBig"
+                  style={styles.footerBg}
+                >
+                  <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={styles.inputContainer}>
+                      <Text style={styles.title}>Create Account</Text>
+                      <Text style={styles.caption}>Basic Information</Text>
+                    </View>
+                    <View style={styles.inputContainer}>
+                      <TextInput
+                        placeholder="First Name"
+                        onChangeText={(text) => setFirstName(text)}
+                        value={firstname}
+                        // style={styles.input}
+                      />
+                    </View>
+                    <View style={styles.inputContainer}>
+                      <TextInput
+                        placeholder="Last Name"
+                        onChangeText={(text) => setLastName(text)}
+                        value={lastname}
+                        // style={styles.input}
+                      />
+                    </View>
+                    <View style={styles.inputContainer}>
+                      <TextInput
+                        placeholder="Username"
+                        onChangeText={(text) => setUsername(text)}
+                        value={username}
+                        style={[appError && { borderColor: "crimson" }]}
+                        onEndEditing={verify}
+                      />
+                    </View>
+                    <View style={styles.inputContainer}>
+                      <TextInput
+                        placeholder="Enter Email Address"
+                        onChangeText={(text) => setEmail(text)}
+                        value={email}
+                        style={[appError && { borderColor: "crimson" }]}
+                        keyboardType="email-address"
+                        onEndEditing={verify}
+                        autoCapitalize="none"
+                      />
+                    </View>
+                    <View style={styles.inputContainer}>
+                      <TextInput
+                        placeholder="Enter Mobile"
+                        onChangeText={(text) => setMobile(text)}
+                        value={mobile}
+                        style={[appError && { borderColor: "crimson" }]}
+                        keyboardType="numeric"
+                        onEndEditing={verify}
+                      />
+                    </View>
+
+                    <View style={styles.inputContainer}>
+                      <TouchableOpacity
+                        style={[styles.button, styles.green]}
+                        onPress={save}
+                      >
+                        <View style={styles.btnFlex}>
+                          <Text
+                            style={{
+                              color: "white",
+                              flex: 2.7,
+                              textAlign: "center",
+                            }}
+                          >
+                            Next
+                          </Text>
+                          <AntDesign
+                            name="rightcircle"
+                            size={18}
+                            color="white"
+                            style={{ flex: 0.3, textAlign: "center" }}
+                          />
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={[styles.inputContainer, styles.captionBox]}>
+                      <TouchableOpacity
+                        onPress={() => props.navigation.navigate("Login")}
+                      >
+                        <Text style={[styles.caption, { textAlign: "center" }]}>
+                          Already Have an account?{" "}
+                          <Text style={styles.link}>Login</Text>
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </ScrollView>
+                </Animatable.View>
+              </>
+            )}
+          </LinearGradient>
+        </ImageBackground>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: "center",
-  },
-  imgWrapper: {
-    width: "100%",
-    height: 100,
-    paddingHorizontal: 2,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 10,
-  },
-  homeImg: {
-    width: 100,
-    height: 100,
-  },
-  inputContainer: {
-    padding: 10,
-  },
-  input: {
-    borderColor: "#0075FF",
-    borderWidth: 0,
-    borderBottomColor: "#0075FF",
-    borderBottomWidth: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 5,
-    borderRadius: 10,
-  },
-
-  button: {
-    width: "100%",
-    height: 50,
-    borderRadius: 20,
-    backgroundColor: "white",
-    color: "black",
-    padding: 3,
-    paddingTop: 15,
-    margin: 5,
-    textAlign: "center",
-  },
-  green: {
-    backgroundColor: "#0075FF",
-    color: "white",
-  },
-  text: {
-    color: "white",
-    textAlign: "center",
-  },
-  captionBox: {
-    alignItems: "flex-end",
-    justifyContent: "center",
-    flexDirection: "row",
-    paddingVertical: 10,
-  },
-  caption: {
-    textAlign: "center",
-  },
-  link: {
-    color: "#0075FF",
-  },
-  error: {
-    // color: "#6EBA4F",
-    color: "#0075FF",
-    backgroundColor: "#fff",
-    padding: 10,
-    borderRadius: 5,
-  },
-});
 
 export default BasicInfoScreen;

@@ -1,15 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
   View,
   Image,
-  TextInput,
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
+import { TextInput } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import { getUserDetails } from "../redux/actions/userActions";
 
@@ -25,6 +25,11 @@ const AccountScreen = (props) => {
     await AsyncStorage.removeItem("userInfo");
     props.navigation.navigate("Login");
   };
+  const [firstname, setFirstName] = useState(user && user.firstname);
+  const [lastname, setLastName] = useState(user && user.lastname);
+  const [username, setUsername] = useState(user && user.username);
+  const [mobile, setMobile] = useState(user && user.mobile);
+  const [email, setEmail] = useState(user && user.email);
   return (
     <SafeAreaView
       style={{
@@ -33,12 +38,71 @@ const AccountScreen = (props) => {
         paddingVertical: 30,
       }}
     >
+      <View style={styles.header}>
+        <View style={styles.profile}>
+          <Image
+            source={require("../../assets/avatar.png")}
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: 50,
+            }}
+          />
+        </View>
+        <View style={styles.name}>
+          <Text style={styles.nameMd}>
+            {user && user.firstname + " " + user.lastname}
+          </Text>
+        </View>
+      </View>
       <View style={{ padding: 10 }}>
         <View style={styles.inputContainer}>
-          <TouchableOpacity style={[styles.button, styles.green]}>
-            <Text style={{ color: "white" }}>Profile</Text>
-          </TouchableOpacity>
+          <Text>First Name</Text>
+          <TextInput
+            onChangeText={(text) => setFirstName(text)}
+            value={firstname}
+            style={styles.input}
+            editable={false}
+          />
         </View>
+        <View style={styles.inputContainer}>
+          <Text>Last Name</Text>
+          <TextInput
+            onChangeText={(text) => setLastName(text)}
+            value={lastname}
+            // style={styles.input}
+            editable={false}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Text>Username</Text>
+          <TextInput
+            onChangeText={(text) => setUsername(text)}
+            value={username}
+            style={styles.input}
+            editable={false}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Text>Email Address</Text>
+          <TextInput
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+            // style={styles.input}
+            editable={false}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Text>Mobile Number</Text>
+          <TextInput
+            placeholder="Enter Mobile"
+            onChangeText={(text) => setMobile(text)}
+            value={mobile}
+            // style={styles.input}
+            editable={false}
+          />
+        </View>
+
         <View style={styles.inputContainer}>
           <TouchableOpacity style={[styles.button, styles.green]}>
             <Text style={{ color: "white" }}>Contact / Support</Text>
@@ -83,6 +147,35 @@ const styles = StyleSheet.create({
     backgroundColor: "gray",
     backgroundColor: "#0075FF",
     color: "white",
+  },
+  header: {
+    width: "100%",
+    height: 200,
+    backgroundColor: "#0075FF",
+    justifyContent: "center",
+  },
+  profile: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "white",
+    alignSelf: "center",
+  },
+  name: { width: "100%", height: "auto" },
+  nameMd: {
+    color: "white",
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 18,
+  },
+  input: {
+    borderColor: "#0075FF",
+    borderWidth: 0,
+    borderBottomColor: "#0075FF",
+    borderBottomWidth: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    borderRadius: 10,
   },
 });
 

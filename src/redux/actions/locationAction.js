@@ -10,7 +10,7 @@ export const listlocations = () => async (dispatch) => {
   try {
     dispatch({ type: LOCATION_LIST_REQUEST });
 
-    const { data } = await axios.get(`${BASE_URL}/api/v1/location`);
+    const { data } = await axios.get(`${BASE_URL}/api/v1/location?limit=500`);
 
     dispatch({
       type: LOCATION_LIST_SUCCESS,

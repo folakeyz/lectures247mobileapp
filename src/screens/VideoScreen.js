@@ -37,7 +37,7 @@ const VideoScreen = ({ navigation, route }) => {
         `${FileSystem.documentDirectory + `${course.title}.mp4`}`
       );
       if (uri === undefined) {
-        setVideoUrl(`${BASE_URL}/uploads/${course.url}`);
+        setVideoUrl(`https://portal.lectures247.com/uploads/${course.url}`);
       } else {
         setVideoUrl(uri);
         setDownloaded(true);
@@ -113,6 +113,7 @@ const VideoScreen = ({ navigation, route }) => {
           useNativeControls
           style={styles.video}
         />
+
         {!downloaded && <Button title={buttonTitle} onPress={downloadVideo} />}
         {!downloaded && <Text>Video Size: {totalSize}</Text>}
         {!downloaded && <Text>Download Progress: {progressValue}%</Text>}

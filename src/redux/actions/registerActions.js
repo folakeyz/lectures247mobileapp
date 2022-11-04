@@ -6,8 +6,11 @@ import {
   USER_REGISTER_SUCCESS,
   USER_SAVE_BASIC_INFO,
   USER_SAVE_EDUCATION_INFO,
+  USER_CHECK_SUCCESS,
+  USER_CHECK_FAIL,
+  USER_CHECK_REQUEST,
 } from "../constants/registerConstants";
-import { get } from "react-native/Libraries/Utilities/PixelRatio";
+
 import { BASE_URL } from "../config";
 
 export const saveBasicInfo = (data) => (dispatch) => {
@@ -39,7 +42,7 @@ export const userRegister = (form) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      `${BASE_URL}/api/v1/auth/students/register`,
+      `${BASE_URL}/api/v1/auth/register`,
       form,
       config
     );
@@ -55,6 +58,36 @@ export const userRegister = (form) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: USER_REGISTER_FAIL,
+      payload:
+        error.response && error.response.data.error
+          ? error.response.data.error
+          : error.message,
+    });
+  }
+};
+
+export const checkUser = (email, mobile, username) => async (dispatch) => {
+  try {
+    dispatch({
+      type: USER_CHECK_REQUEST,
+    });
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const { data } = await axios.post(
+      `${BASE_URL}/api/v1/auth/check`,
+      { email, mobile, username },
+      config
+    );
+    dispatch({
+      type: USER_CHECK_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_CHECK_FAIL,
       payload:
         error.response && error.response.data.error
           ? error.response.data.error
